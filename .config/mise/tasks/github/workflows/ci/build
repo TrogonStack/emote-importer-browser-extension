@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#MISE description="Build the extension for Chrome and Firefox"
+set -euo pipefail
+
+pnpm build
+pnpm build:firefox

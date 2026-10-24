@@ -1,0 +1,1 @@
+export const LOAD_MORE_THRESHOLD_PX = 240;

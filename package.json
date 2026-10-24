@@ -1,0 +1,39 @@
+{
+  "name": "emote-importer-browser-extension",
+  "version": "0.1.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:firefox": "vite --mode firefox",
+    "build": "tsc --noEmit && vite build",
+    "build:firefox": "tsc --noEmit && vite build --mode firefox",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
+    "test": "vitest run",
+    "check": "pnpm fmt:check && pnpm lint && pnpm typecheck && pnpm test"
+  },
+  "dependencies": {
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@crxjs/vite-plugin": "3.0.0",
+    "@tailwindcss/vite": "4.3.3",
+    "@types/chrome": "0.3.6",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "oxfmt": "0.74.0",
+    "oxlint": "1.89.0",
+    "tailwindcss": "4.3.3",
+    "typescript": "7.0.2",
+    "vite": "8.3.5",
+    "vitest": "5.0.5"
+  },
+  "packageManager": "pnpm@10.33.0"
+}

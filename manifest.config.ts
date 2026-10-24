@@ -1,0 +1,52 @@
+import { defineManifest } from "@crxjs/vite-plugin";
+
+import pkg from "./package.json" with { type: "json" };
+
+export type TargetBrowser = "chrome" | "firefox";
+
+const BACKGROUND_ENTRY = "src/app/background/index.ts";
+
+const background = (browser: TargetBrowser) =>
+  browser === "firefox"
+    ? { scripts: [BACKGROUND_ENTRY] }
+    : { service_worker: BACKGROUND_ENTRY, type: "module" as const };
+
+const browserSpecificSettings = (browser: TargetBrowser) =>
+  browser === "firefox"
+    ? {
+        browser_specific_settings: {
+          gecko: {
+            id: "emote-importer@trogonstack",
+            strict_min_version: "140.0",
+            data_collection_permissions: { required: ["none" as const] },
+          },
+        },
+      }
+    : {};
+
+export const createManifest = (browser: TargetBrowser) =>
+  defineManifest({
+    manifest_version: 3,
+    name: "Emote Importer",
+    description: "Search 7TV and BetterTTV emotes and install them as Slack custom emoji.",
+    version: pkg.version,
+    action: {
+      default_popup: "src/app/popup/index.html",
+    },
+    background: background(browser),
+    content_scripts: [
+      {
+        matches: ["https://*.slack.com/customize/emoji*"],
+        js: ["src/app/content/index.tsx"],
+        run_at: "document_idle",
+      },
+    ],
+    permissions: ["storage", "declarativeNetRequestWithHostAccess"],
+    host_permissions: [
+      "https://7tv.io/*",
+      "https://cdn.7tv.app/*",
+      "https://api.betterttv.net/*",
+      "https://cdn.betterttv.net/*",
+    ],
+    ...browserSpecificSettings(browser),
+  });

@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+#MISE description="Format check, lint, type-check, and tests"
+set -euo pipefail
+
+pnpm check
