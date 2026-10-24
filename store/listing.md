@@ -66,3 +66,9 @@ The BetterTTV search API rejects requests without a BetterTTV referer. The exten
 ### Remote code
 
 No. All JavaScript ships in the package. The extension only downloads emote images and JSON data.
+
+## Test instructions
+
+```text
+Requires a Slack workspace where you can add custom emoji. Open https://<workspace>.slack.com/customize/emoji, click "Import emotes" next to "Add Custom Emoji", and click Import on any emote. The emote appears in the workspace's custom emoji list.
+```
