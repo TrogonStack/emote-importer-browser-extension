@@ -17,11 +17,11 @@ function names(picked: ReturnType<typeof uploadFiles>) {
 
 describe("uploadFiles", () => {
   it("lists PNGs under Slack's limit from largest to smallest for static emotes", () => {
-    expect(names(uploadFiles(files, false))).toEqual(["4x.png", "1x.png"]);
+    expect(names(uploadFiles(files, false))).toEqual(["4x.png", "1x.png", "4x.webp"]);
   });
 
-  it("lists GIFs under Slack's limit for animated emotes", () => {
-    expect(names(uploadFiles(files, true))).toEqual(["1x.gif"]);
+  it("lists GIFs then WebPs under Slack's limit for animated emotes", () => {
+    expect(names(uploadFiles(files, true))).toEqual(["1x.gif", "4x.webp"]);
   });
 
   it("falls back to the smallest file when all exceed the limit", () => {

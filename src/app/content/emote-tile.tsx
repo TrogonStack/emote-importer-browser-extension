@@ -5,10 +5,11 @@ import type { SlackEmojiName } from "@/types/slack-emoji-name";
 import { parseSlackEmojiName, slackEmojiNameFromEmoteCode } from "@/helpers/slack-emoji-name";
 import { Button } from "@/components/button";
 import { TextInput } from "@/components/text-input";
-import { fetchEmoteFile } from "./emote-file";
 import { EmotePreview } from "./emote-preview";
-import { importEmoji } from "./slack-page";
+import { importEmote as importEmoteAsEmoji } from "./slack-page";
 import { toastStore } from "./toast-store";
+import { findCustomEmojiImage, SlackApiError } from "@/services/slack";
+import { SLACK_NAME_TAKEN_ERROR } from "@/constants/slack";
 import { IMPORTED_NOTICE_MS } from "@/app/content/constants/timing";
 
 type ImportStatus =
@@ -38,11 +39,16 @@ export function EmoteTile(props: Props) {
     if (!name) return;
     setStatus({ kind: "importing" });
     try {
-      await importEmoji({ name, file: await fetchEmoteFile(emote, name) });
+      await importEmoteAsEmoji(emote, name);
       setStatus({ kind: "imported", name });
     } catch (error) {
       setStatus({ kind: "failed" });
-      toastStore.show(`:${name}: ${error instanceof Error ? error.message : String(error)}`);
+      const message = error instanceof Error ? error.message : String(error);
+      const imageUrl =
+        error instanceof SlackApiError && error.code === SLACK_NAME_TAKEN_ERROR
+          ? await findCustomEmojiImage(name).catch(() => undefined)
+          : undefined;
+      toastStore.show({ message: `:${name}: ${message}`, imageUrl });
     }
   }
 

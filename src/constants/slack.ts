@@ -4,8 +4,20 @@ export const SLACK_API_TOKEN_PATTERN = /"api_token":"(xox[a-z]-[^"]+)"/;
 
 export const SLACK_ERROR_MESSAGES: Readonly<Record<string, string>> = {
   error_name_taken: "An emoji with this name already exists",
+  error_name_taken_i18n: "Slack has a built-in emoji with this name, pick another one",
   resized_but_still_too_large: "The image is too large for Slack, even after resizing",
 };
+
+export const SLACK_NAME_TAKEN_ERROR = "error_name_taken";
+
+export const SLACK_EMOJI_ALIAS_PREFIX = "alias:";
+
+export const SLACK_UPLOAD_FINAL_ERRORS: ReadonlySet<string> = new Set([
+  SLACK_NAME_TAKEN_ERROR,
+  "error_name_taken_i18n",
+  "invalid_auth",
+  "not_authed",
+]);
 
 export const SLACK_ACTIVE_SORT_HEADER_SELECTOR = ".p-customize_emoji_list__header--active";
 

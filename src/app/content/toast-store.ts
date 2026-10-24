@@ -1,10 +1,12 @@
 import { TOAST_LIFETIME_MS } from "@/app/content/constants/timing";
+import type { SlackEmojiImageUrl } from "@/types/slack-emoji-image-url";
 
 type Listener = () => void;
 
 export type Toast = {
   readonly id: number;
   readonly message: string;
+  readonly imageUrl: SlackEmojiImageUrl | undefined;
 };
 
 let toasts: readonly Toast[] = [];
@@ -22,9 +24,9 @@ function dismiss(id: number): void {
 
 export const toastStore = {
   current: (): readonly Toast[] => toasts,
-  show: (message: string): void => {
+  show: (toast: Omit<Toast, "id">): void => {
     const id = nextId++;
-    publish([...toasts, { id, message }]);
+    publish([...toasts, { ...toast, id }]);
     setTimeout(() => dismiss(id), TOAST_LIFETIME_MS);
   },
   dismiss,

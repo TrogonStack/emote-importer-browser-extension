@@ -8,7 +8,12 @@ import {
   type TwitchUserId,
 } from "@/types/emote";
 import { toEmoteImageUrl } from "@/helpers/emote";
-import { BETTERTTV_API_URL, BETTERTTV_CDN_URL } from "@/constants/betterttv";
+import {
+  BETTERTTV_API_URL,
+  BETTERTTV_CDN_URL,
+  BETTERTTV_UPLOAD_FORMATS,
+  BETTERTTV_UPLOAD_SIZES,
+} from "@/constants/betterttv";
 
 type BttvEmote = {
   id: string;
@@ -26,8 +31,10 @@ function toEmote(raw: BttvEmote): Emote {
     id: raw.id as EmoteId,
     code: raw.code as EmoteCode,
     previewUrl: toEmoteImageUrl(`${BETTERTTV_CDN_URL}/${raw.id}/2x.webp`),
-    uploadCandidates: ["3x", "2x", "1x"].map((size) =>
-      toEmoteImageUrl(`${BETTERTTV_CDN_URL}/${raw.id}/${size}`),
+    uploadCandidates: BETTERTTV_UPLOAD_FORMATS.flatMap((extension) =>
+      BETTERTTV_UPLOAD_SIZES.map((size) =>
+        toEmoteImageUrl(`${BETTERTTV_CDN_URL}/${raw.id}/${size}${extension}`),
+      ),
     ),
     provider: "bttv",
     animated: raw.animated,

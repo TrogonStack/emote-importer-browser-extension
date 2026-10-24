@@ -10,20 +10,25 @@ async function fetchImageBlob(url: EmoteImageUrl): Promise<Blob> {
   return new Blob([bytes], { type: mimeType });
 }
 
-async function fetchLargestFittingBlob(candidates: readonly EmoteImageUrl[]): Promise<Blob> {
-  const blobs = (await Promise.all(candidates.map(fetchImageBlob))).toSorted(
-    (a, b) => b.size - a.size,
-  );
-  const picked = blobs.find((blob) => blob.size <= MAX_SLACK_UPLOAD_BYTES) ?? blobs.at(-1);
-  if (!picked) throw new Error("Emote has no uploadable image");
-  return picked;
-}
-
-export async function fetchEmoteFile(emote: Emote, name: SlackEmojiName): Promise<File> {
-  const blob = await fetchLargestFittingBlob(emote.uploadCandidates);
+function toFile(blob: Blob, name: SlackEmojiName): File {
   return new File([blob], `${name}.${EMOTE_FILE_EXTENSIONS[blob.type] ?? "png"}`, {
     type: blob.type,
   });
+}
+
+export async function* fetchEmoteFiles(emote: Emote, name: SlackEmojiName): AsyncGenerator<File> {
+  let smallest: Blob | undefined;
+  let yielded = false;
+  for (const url of emote.uploadCandidates) {
+    const blob = await fetchImageBlob(url);
+    if (blob.size <= MAX_SLACK_UPLOAD_BYTES) {
+      yielded = true;
+      yield toFile(blob, name);
+    } else if (!smallest || blob.size < smallest.size) {
+      smallest = blob;
+    }
+  }
+  if (!yielded && smallest) yield toFile(smallest, name);
 }
 
 const previewObjectUrls = new Map<EmoteImageUrl, Promise<string>>();

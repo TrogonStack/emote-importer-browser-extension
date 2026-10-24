@@ -1,4 +1,7 @@
-import { addEmoji, type EmojiUpload } from "@/services/slack";
+import { addEmoji, isImageRejection, type EmojiUpload, type SlackApiError } from "@/services/slack";
+import type { Emote } from "@/types/emote";
+import type { SlackEmojiName } from "@/types/slack-emoji-name";
+import { fetchEmoteFiles } from "./emote-file";
 import { waitFor } from "@/helpers/wait-for";
 import { SLACK_ACTIVE_SORT_HEADER_SELECTOR } from "@/constants/slack";
 
@@ -43,4 +46,18 @@ export async function importEmoji(upload: EmojiUpload): Promise<void> {
       void refreshEmojiList().catch(() => undefined);
     }
   }
+}
+
+export async function importEmote(emote: Emote, name: SlackEmojiName): Promise<void> {
+  let rejection: SlackApiError | undefined;
+  for await (const file of fetchEmoteFiles(emote, name)) {
+    try {
+      await importEmoji({ name, file });
+      return;
+    } catch (error) {
+      if (!isImageRejection(error)) throw error;
+      rejection = error;
+    }
+  }
+  throw rejection ?? new Error("Emote has no uploadable image");
 }
