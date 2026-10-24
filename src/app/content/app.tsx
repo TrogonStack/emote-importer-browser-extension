@@ -174,7 +174,7 @@ function Toasts() {
           <button
             type="button"
             title="Click to dismiss"
-            className="flex cursor-pointer items-start gap-2 rounded-lg border border-rose-300 bg-rose-50 px-3 py-2 text-left text-rose-950 shadow-lg motion-safe:animate-shake hover:bg-rose-100 dark:border-rose-800 dark:bg-rose-950 dark:text-rose-50 dark:hover:bg-rose-900"
+            className="flex cursor-pointer items-center gap-2 rounded-lg border border-rose-300 bg-rose-50 px-3 py-2 text-left text-rose-950 shadow-lg motion-safe:animate-shake hover:bg-rose-100 dark:border-rose-800 dark:bg-rose-950 dark:text-rose-50 dark:hover:bg-rose-900"
             onClick={() => toastStore.dismiss(toast.id)}
           >
             <span aria-hidden="true" className="font-bold text-rose-700 dark:text-rose-300">
