@@ -180,8 +180,9 @@ function Toasts() {
             <span aria-hidden="true" className="font-bold text-rose-700 dark:text-rose-300">
               ⚠
             </span>
-            <span>
-              <strong>Import failed.</strong> {toast.message}
+            <span className="flex flex-col">
+              <strong>Import failed</strong>
+              <span>{toast.message}</span>
             </span>
             {toast.imageUrl && (
               <img
