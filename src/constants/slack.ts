@@ -4,6 +4,7 @@ export const SLACK_API_TOKEN_PATTERN = /"api_token":"(xox[a-z]-[^"]+)"/;
 
 export const SLACK_ERROR_MESSAGES: Readonly<Record<string, string>> = {
   error_name_taken: "An emoji with this name already exists",
+  error_name_taken_i18n: "Slack has a built-in emoji with this name, pick another one",
   resized_but_still_too_large: "The image is too large for Slack, even after resizing",
 };
 
