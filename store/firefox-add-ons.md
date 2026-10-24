@@ -75,7 +75,7 @@ Output: dist/firefox
 
 The two "Unsafe assignment to innerHTML" warnings are inside React DOM (react-dom 19), bundled in assets/text-input-*.js. The extension source never uses innerHTML or dangerouslySetInnerHTML.
 
-Testing requires a Slack workspace where you can add custom emoji. Open https://<workspace>.slack.com/customize/emoji, click "Import emotes" next to "Add Custom Emoji", and click Import on any emote. The emote appears in the workspace's custom emoji list.
+Testing requires a Slack workspace where you can add custom emoji. Open https://<workspace>.slack.com/customize/emoji, click "Import emotes" next to "Add Custom Emoji", and click Import on any emote. If an emote's Import button is disabled, its name is not a valid Slack emoji name; type a new one in the name field first. The emote appears in the workspace's custom emoji list.
 ```
 
 ## Data collection

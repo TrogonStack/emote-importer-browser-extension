@@ -106,5 +106,5 @@ https://github.com/TrogonStack/emote-importer-browser-extension/blob/main/PRIVAC
 ## Test instructions
 
 ```text
-Requires a Slack workspace where you can add custom emoji. Open https://<workspace>.slack.com/customize/emoji, click "Import emotes" next to "Add Custom Emoji", and click Import on any emote. The emote appears in the workspace's custom emoji list.
+Requires a Slack workspace where you can add custom emoji. Open https://<workspace>.slack.com/customize/emoji, click "Import emotes" next to "Add Custom Emoji", and click Import on any emote. If an emote's Import button is disabled, its name is not a valid Slack emoji name; type a new one in the name field first. The emote appears in the workspace's custom emoji list.
 ```
