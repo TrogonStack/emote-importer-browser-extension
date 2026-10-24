@@ -6,13 +6,21 @@ export type TargetBrowser = "chrome" | "firefox";
 
 const BACKGROUND_ENTRY = "src/app/background/index.ts";
 
-const background = (browser: TargetBrowser) =>
-  browser === "firefox"
+const ICONS = {
+  16: "src/assets/icons/icon-16.png",
+  32: "src/assets/icons/icon-32.png",
+  48: "src/assets/icons/icon-48.png",
+  128: "src/assets/icons/icon-128.png",
+};
+
+function background(browser: TargetBrowser) {
+  return browser === "firefox"
     ? { scripts: [BACKGROUND_ENTRY] }
     : { service_worker: BACKGROUND_ENTRY, type: "module" as const };
+}
 
-const browserSpecificSettings = (browser: TargetBrowser) =>
-  browser === "firefox"
+function browserSpecificSettings(browser: TargetBrowser) {
+  return browser === "firefox"
     ? {
         browser_specific_settings: {
           gecko: {
@@ -23,14 +31,17 @@ const browserSpecificSettings = (browser: TargetBrowser) =>
         },
       }
     : {};
+}
 
-export const createManifest = (browser: TargetBrowser) =>
-  defineManifest({
+export function createManifest(browser: TargetBrowser) {
+  return defineManifest({
     manifest_version: 3,
     name: "Emote Importer",
     description: "Search 7TV and BetterTTV emotes and install them as Slack custom emoji.",
     version: pkg.version,
+    icons: ICONS,
     action: {
+      default_icon: ICONS,
       default_popup: "src/app/popup/index.html",
     },
     background: background(browser),
@@ -50,3 +61,4 @@ export const createManifest = (browser: TargetBrowser) =>
     ],
     ...browserSpecificSettings(browser),
   });
+}
