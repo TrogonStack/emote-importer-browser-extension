@@ -1,20 +1,34 @@
-# Store listing
+# Chrome Web Store
 
-Text and settings for the Chrome Web Store and Firefox Add-ons listings. Screenshots live in [screenshots](screenshots). The store icon is [icon-128.png](../src/assets/icons/icon-128.png).
+Answers for each tab of the [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole). The [Firefox Add-ons](firefox-add-ons.md) listing uses the same text where the two stores ask the same question.
 
-## Category
+## Package
 
-- Chrome Web Store: Productivity, Communication
+Build the upload from a clean checkout of `main`:
+
+```sh
+mise install
+pnpm install --frozen-lockfile
+pnpm build
+VERSION=$(node -p "require('./package.json').version")
+(cd dist/chrome && zip -qrX ../emote-importer-chrome-$VERSION.zip .)
+```
+
+Upload `dist/emote-importer-chrome-<version>.zip` from the Package tab. Bump `version` in `package.json` before every new upload after the first published one.
+
+Leave Verified CRX uploads off. Opting in requires signing every future upload with a private key that only the publisher holds.
+
+## Store listing
+
+- Category: Productivity, Communication
 - Language: English
 - Mature content: No
-
-## URLs
-
+- Store icon: [icon-128.png](../src/assets/icons/icon-128.png)
+- Screenshots: every image in [screenshots](screenshots), 1280x800
 - Homepage: https://github.com/TrogonStack/emote-importer-browser-extension
 - Support: https://github.com/TrogonStack/emote-importer-browser-extension/issues
-- Privacy policy: https://github.com/TrogonStack/emote-importer-browser-extension/blob/main/PRIVACY.md
 
-## Description
+### Description
 
 ```text
 Emote Importer brings Twitch emotes to your Slack workspace in one click.
@@ -67,8 +81,30 @@ The BetterTTV search API rejects requests without a BetterTTV referer. The exten
 
 No. All JavaScript ships in the package. The extension only downloads emote images and JSON data.
 
+### Data usage
+
+Tick only **Authentication information**. Slack's own Add Custom Emoji dialog sends the page's session token in the `token` field of its `emoji.add` request, and the extension sends the same field, so it handles a credential even though the token only ever goes back to Slack.
+
+Tick every certification:
+
+- I do not sell or transfer user data to third parties, outside of the approved use cases
+- I do not use or transfer user data for purposes that are unrelated to my item's single purpose
+- I do not use or transfer user data to determine creditworthiness or for lending purposes
+
+### Privacy policy URL
+
+```text
+https://github.com/TrogonStack/emote-importer-browser-extension/blob/main/PRIVACY.md
+```
+
+## Distribution
+
+- Payments: Free of charge
+- Visibility: Public, or Unlisted to try the store build before anyone can find it
+- Regions: All regions
+
 ## Test instructions
 
 ```text
-Requires a Slack workspace where you can add custom emoji. Open https://<workspace>.slack.com/customize/emoji, click "Import emotes" next to "Add Custom Emoji", and click Import on any emote. The emote appears in the workspace's custom emoji list.
+Requires a Slack workspace where you can add custom emoji. Open https://<workspace>.slack.com/customize/emoji, click "Import emotes" next to "Add Custom Emoji", and click Import on any emote. If an emote's Import button is disabled, its name is not a valid Slack emoji name; type a new one in the name field first. The emote appears in the workspace's custom emoji list.
 ```

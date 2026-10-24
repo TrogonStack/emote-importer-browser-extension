@@ -37,7 +37,7 @@ The repository follows the Straw Hat [NodeJS directory structure](https://github
 - `src/storages` extension storage, by storage area
 - `src/types`, `src/constants`, `src/helpers`, `src/styles` shared code
 - `tests/vitest` unit tests
-- `store` listing assets for the Chrome Web Store and Firefox Add-ons
+- `store` listing text and images for the [Chrome Web Store](store/chrome-web-store.md) and [Firefox Add-ons](store/firefox-add-ons.md)
 - `.config/mise/tasks` tasks that CI runs through `mise run`
 
 ## Commits
