@@ -1,7 +1,9 @@
 import type { Brand } from "@/types/brand";
 import type { SlackEmojiName } from "@/types/slack-emoji-name";
+import type { SlackEmojiImageUrl } from "@/types/slack-emoji-image-url";
 import {
   SLACK_API_TOKEN_PATTERN,
+  SLACK_EMOJI_ALIAS_PREFIX,
   SLACK_ERROR_MESSAGES,
   SLACK_UPLOAD_FINAL_ERRORS,
 } from "@/constants/slack";
@@ -26,6 +28,10 @@ type SlackApiResponse = {
   readonly error?: string;
 };
 
+type SlackEmojiListResponse = SlackApiResponse & {
+  readonly emoji?: Readonly<Record<string, string>>;
+};
+
 export class SlackApiError extends Error {
   readonly code: string;
 
@@ -39,19 +45,37 @@ export function isImageRejection(error: unknown): error is SlackApiError {
   return error instanceof SlackApiError && !SLACK_UPLOAD_FINAL_ERRORS.has(error.code);
 }
 
-export async function addEmoji(upload: EmojiUpload): Promise<void> {
-  const { name, file } = upload;
+async function callSlackApi<T extends SlackApiResponse>(
+  method: string,
+  fields: Readonly<Record<string, string | Blob>>,
+): Promise<T> {
   const form = new FormData();
   form.set("token", readApiToken());
-  form.set("name", name);
-  form.set("mode", "data");
-  form.set("image", file);
-  const response = await fetch(new URL("/api/emoji.add", location.origin), {
+  for (const [key, value] of Object.entries(fields)) form.set(key, value);
+  const response = await fetch(new URL(`/api/${method}`, location.origin), {
     method: "POST",
     body: form,
     credentials: "include",
   });
   if (!response.ok) throw new Error(`Slack request failed (${response.status})`);
-  const body = (await response.json()) as SlackApiResponse;
+  const body = (await response.json()) as T;
   if (!body.ok) throw new SlackApiError(body.error ?? "unknown_error");
+  return body;
+}
+
+export async function addEmoji(upload: EmojiUpload): Promise<void> {
+  const { name, file } = upload;
+  await callSlackApi("emoji.add", { name, mode: "data", image: file });
+}
+
+export async function findCustomEmojiImage(
+  name: SlackEmojiName,
+): Promise<SlackEmojiImageUrl | undefined> {
+  const body = await callSlackApi<SlackEmojiListResponse>("emoji.list", {});
+  const emoji = body.emoji ?? {};
+  const value = emoji[name];
+  const target = value?.startsWith(SLACK_EMOJI_ALIAS_PREFIX)
+    ? emoji[value.slice(SLACK_EMOJI_ALIAS_PREFIX.length)]
+    : value;
+  return target as SlackEmojiImageUrl | undefined;
 }

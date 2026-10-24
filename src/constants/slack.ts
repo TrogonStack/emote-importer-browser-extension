@@ -8,8 +8,12 @@ export const SLACK_ERROR_MESSAGES: Readonly<Record<string, string>> = {
   resized_but_still_too_large: "The image is too large for Slack, even after resizing",
 };
 
+export const SLACK_NAME_TAKEN_ERROR = "error_name_taken";
+
+export const SLACK_EMOJI_ALIAS_PREFIX = "alias:";
+
 export const SLACK_UPLOAD_FINAL_ERRORS: ReadonlySet<string> = new Set([
-  "error_name_taken",
+  SLACK_NAME_TAKEN_ERROR,
   "error_name_taken_i18n",
   "invalid_auth",
   "not_authed",

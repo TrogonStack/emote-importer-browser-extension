@@ -183,6 +183,13 @@ function Toasts() {
             <span>
               <strong>Import failed.</strong> {toast.message}
             </span>
+            {toast.imageUrl && (
+              <img
+                src={toast.imageUrl}
+                alt="Existing emoji"
+                className="size-6 shrink-0 object-contain"
+              />
+            )}
             <span aria-hidden="true" className="text-rose-700 dark:text-rose-300">
               ✕
             </span>

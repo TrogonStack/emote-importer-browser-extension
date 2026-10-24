@@ -8,6 +8,8 @@ import { TextInput } from "@/components/text-input";
 import { EmotePreview } from "./emote-preview";
 import { importEmote as importEmoteAsEmoji } from "./slack-page";
 import { toastStore } from "./toast-store";
+import { findCustomEmojiImage, SlackApiError } from "@/services/slack";
+import { SLACK_NAME_TAKEN_ERROR } from "@/constants/slack";
 import { IMPORTED_NOTICE_MS } from "@/app/content/constants/timing";
 
 type ImportStatus =
@@ -41,7 +43,12 @@ export function EmoteTile(props: Props) {
       setStatus({ kind: "imported", name });
     } catch (error) {
       setStatus({ kind: "failed" });
-      toastStore.show(`:${name}: ${error instanceof Error ? error.message : String(error)}`);
+      const message = error instanceof Error ? error.message : String(error);
+      const imageUrl =
+        error instanceof SlackApiError && error.code === SLACK_NAME_TAKEN_ERROR
+          ? await findCustomEmojiImage(name).catch(() => undefined)
+          : undefined;
+      toastStore.show({ message: `:${name}: ${message}`, imageUrl });
     }
   }
 
