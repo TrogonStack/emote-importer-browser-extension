@@ -1,5 +1,10 @@
 export const SEVEN_TV_API_URL = "https://7tv.io/v3";
 
+export const SEVEN_TV_UPLOAD_FORMATS = {
+  animated: ["GIF", "WEBP"],
+  static: ["PNG", "WEBP"],
+} as const;
+
 export const SEVEN_TV_EMOTE_FIELDS =
   "items { id name animated host { url files { name format size } } }";
 

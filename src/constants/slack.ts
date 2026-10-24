@@ -8,6 +8,13 @@ export const SLACK_ERROR_MESSAGES: Readonly<Record<string, string>> = {
   resized_but_still_too_large: "The image is too large for Slack, even after resizing",
 };
 
+export const SLACK_UPLOAD_FINAL_ERRORS: ReadonlySet<string> = new Set([
+  "error_name_taken",
+  "error_name_taken_i18n",
+  "invalid_auth",
+  "not_authed",
+]);
+
 export const SLACK_ACTIVE_SORT_HEADER_SELECTOR = ".p-customize_emoji_list__header--active";
 
 export const SLACK_EMOJI_NAME_PATTERN = /^[a-z0-9_-]{1,100}$/;

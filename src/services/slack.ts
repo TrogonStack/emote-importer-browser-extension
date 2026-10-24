@@ -1,6 +1,10 @@
 import type { Brand } from "@/types/brand";
 import type { SlackEmojiName } from "@/types/slack-emoji-name";
-import { SLACK_API_TOKEN_PATTERN, SLACK_ERROR_MESSAGES } from "@/constants/slack";
+import {
+  SLACK_API_TOKEN_PATTERN,
+  SLACK_ERROR_MESSAGES,
+  SLACK_UPLOAD_FINAL_ERRORS,
+} from "@/constants/slack";
 
 type SlackApiToken = Brand<string, "SlackApiToken">;
 
@@ -22,8 +26,17 @@ type SlackApiResponse = {
   readonly error?: string;
 };
 
-function describeError(code: string): string {
-  return SLACK_ERROR_MESSAGES[code] ?? `Slack refused the upload (${code})`;
+export class SlackApiError extends Error {
+  readonly code: string;
+
+  constructor(code: string) {
+    super(SLACK_ERROR_MESSAGES[code] ?? `Slack refused the upload (${code})`);
+    this.code = code;
+  }
+}
+
+export function isImageRejection(error: unknown): boolean {
+  return error instanceof SlackApiError && !SLACK_UPLOAD_FINAL_ERRORS.has(error.code);
 }
 
 export async function addEmoji(upload: EmojiUpload): Promise<void> {
@@ -40,5 +53,5 @@ export async function addEmoji(upload: EmojiUpload): Promise<void> {
   });
   if (!response.ok) throw new Error(`Slack request failed (${response.status})`);
   const body = (await response.json()) as SlackApiResponse;
-  if (!body.ok) throw new Error(describeError(body.error ?? "unknown_error"));
+  if (!body.ok) throw new SlackApiError(body.error ?? "unknown_error");
 }

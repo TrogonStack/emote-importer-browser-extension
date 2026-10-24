@@ -5,9 +5,8 @@ import type { SlackEmojiName } from "@/types/slack-emoji-name";
 import { parseSlackEmojiName, slackEmojiNameFromEmoteCode } from "@/helpers/slack-emoji-name";
 import { Button } from "@/components/button";
 import { TextInput } from "@/components/text-input";
-import { fetchEmoteFile } from "./emote-file";
 import { EmotePreview } from "./emote-preview";
-import { importEmoji } from "./slack-page";
+import { importEmote as importEmoteAsEmoji } from "./slack-page";
 import { toastStore } from "./toast-store";
 import { IMPORTED_NOTICE_MS } from "@/app/content/constants/timing";
 
@@ -38,7 +37,7 @@ export function EmoteTile(props: Props) {
     if (!name) return;
     setStatus({ kind: "importing" });
     try {
-      await importEmoji({ name, file: await fetchEmoteFile(emote, name) });
+      await importEmoteAsEmoji(emote, name);
       setStatus({ kind: "imported", name });
     } catch (error) {
       setStatus({ kind: "failed" });

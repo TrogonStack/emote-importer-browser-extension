@@ -9,7 +9,12 @@ import {
 } from "@/types/emote";
 import { toEmoteImageUrl } from "@/helpers/emote";
 import { MAX_SLACK_UPLOAD_BYTES } from "@/constants/slack";
-import { SEVEN_TV_API_URL, SEVEN_TV_POPULAR_QUERY, SEVEN_TV_SEARCH_QUERY } from "@/constants/7tv";
+import {
+  SEVEN_TV_API_URL,
+  SEVEN_TV_POPULAR_QUERY,
+  SEVEN_TV_SEARCH_QUERY,
+  SEVEN_TV_UPLOAD_FORMATS,
+} from "@/constants/7tv";
 
 export type SevenTvFile = {
   name: string;
@@ -39,11 +44,16 @@ type SevenTvEmoteSet = {
   emotes?: SevenTvEmote[] | null;
 };
 
+function largestFirst(files: readonly SevenTvFile[], format: string): SevenTvFile[] {
+  return files.filter((f) => f.format === format).toSorted((a, b) => b.size - a.size);
+}
+
 export function uploadFiles(files: readonly SevenTvFile[], animated: boolean): SevenTvFile[] {
-  const format = animated ? "GIF" : "PNG";
-  const largestFirst = files.filter((f) => f.format === format).toSorted((a, b) => b.size - a.size);
-  const fitting = largestFirst.filter((f) => f.size <= MAX_SLACK_UPLOAD_BYTES);
-  return fitting.length > 0 ? fitting : largestFirst.slice(-1);
+  const formats = SEVEN_TV_UPLOAD_FORMATS[animated ? "animated" : "static"];
+  const fitting = formats.flatMap((format) =>
+    largestFirst(files, format).filter((f) => f.size <= MAX_SLACK_UPLOAD_BYTES),
+  );
+  return fitting.length > 0 ? fitting : largestFirst(files, formats[0]).slice(-1);
 }
 
 function toEmote(item: SevenTvSearchItem): Emote {
