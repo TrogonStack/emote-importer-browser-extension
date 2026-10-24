@@ -35,7 +35,7 @@ export class SlackApiError extends Error {
   }
 }
 
-export function isImageRejection(error: unknown): boolean {
+export function isImageRejection(error: unknown): error is SlackApiError {
   return error instanceof SlackApiError && !SLACK_UPLOAD_FINAL_ERRORS.has(error.code);
 }
 
