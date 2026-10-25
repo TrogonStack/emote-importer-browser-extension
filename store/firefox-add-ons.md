@@ -4,18 +4,7 @@ Answers for each step of submitting to [addons.mozilla.org](https://addons.mozil
 
 ## Package
 
-Build the upload and the source archive from a clean checkout of `main`:
-
-```sh
-mise install
-pnpm install --frozen-lockfile
-pnpm build:firefox
-VERSION=$(node -p "require('./package.json').version")
-(cd dist/firefox && zip -qrX ../emote-importer-firefox-$VERSION.zip .)
-git archive --format=zip -o dist/emote-importer-source-$VERSION.zip HEAD
-```
-
-Upload `dist/emote-importer-firefox-<version>.zip`. Bump `version` in `package.json` before every new upload; Mozilla never accepts the same version twice.
+Merging the release pull request publishes a [GitHub release](https://github.com/TrogonStack/emote-importer-browser-extension/releases) with `emote-importer-firefox-<version>.zip` attached. Download it and upload it. Release Please sets the version, so Mozilla never sees the same version twice.
 
 ### Compatibility
 
@@ -27,7 +16,7 @@ The validator reports two "Unsafe assignment to innerHTML" warnings from React D
 
 ### Source code
 
-Answer **Yes** to "Do You Need to Submit Source Code?", since Vite bundles the code, and upload `dist/emote-importer-source-<version>.zip`.
+Answer **Yes** to "Do You Need to Submit Source Code?", since Vite bundles the code, and upload the release's **Source code (zip)**, for example `https://github.com/TrogonStack/emote-importer-browser-extension/archive/refs/tags/v0.2.0.zip`. GitHub builds it from the release tag, so it matches the upload.
 
 ## Describe add-on
 
