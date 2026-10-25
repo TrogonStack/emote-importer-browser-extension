@@ -32,10 +32,16 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.tag }}
+          fetch-depth: 0
           persist-credentials: false
 
       - name: Install mise
         uses: jdx/mise-action@9149ea85001c7435d5a66bb127d6a1b6227cb0a5 # v5.0.0
+
+      - name: Verify the tag
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: mise run github:workflows:release:verify-tag
 
       - name: Install dependencies
         run: mise run github:workflows:ci:install
@@ -64,7 +70,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ inputs.tag }}
           persist-credentials: false
 
       - name: Install mise
