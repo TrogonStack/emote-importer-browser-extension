@@ -4,17 +4,7 @@ Answers for each tab of the [Chrome Web Store Developer Dashboard](https://chrom
 
 ## Package
 
-Build the upload from a clean checkout of `main`:
-
-```sh
-mise install
-pnpm install --frozen-lockfile
-pnpm build
-VERSION=$(node -p "require('./package.json').version")
-(cd dist/chrome && zip -qrX ../emote-importer-chrome-$VERSION.zip .)
-```
-
-Upload `dist/emote-importer-chrome-<version>.zip` from the Package tab. Bump `version` in `package.json` before every new upload after the first published one.
+Merging the release pull request publishes a [GitHub release](https://github.com/TrogonStack/emote-importer-browser-extension/releases) with `emote-importer-chrome-<version>.zip` attached. Download it and upload it from the Package tab. Release Please sets the version, so every release is higher than the one already in the store.
 
 Leave Verified CRX uploads off. Opting in requires signing every future upload with a private key that only the publisher holds.
 
