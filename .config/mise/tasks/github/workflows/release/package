@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#MISE description="Build the extension and zip each browser's bundle for the stores"
+set -euo pipefail
+
+pnpm build
+pnpm build:firefox
+
+version="$(node -p 'require("./package.json").version')"
+for browser in chrome firefox; do
+  (cd "dist/$browser" && zip -qr "../emote-importer-$browser-$version.zip" .)
+done
