@@ -4,7 +4,9 @@ Answers for each tab of the [Chrome Web Store Developer Dashboard](https://chrom
 
 ## Package
 
-Merging the release pull request publishes a [GitHub release](https://github.com/TrogonStack/emote-importer-browser-extension/releases) with `emote-importer-chrome-<version>.zip` attached. Download it and upload it from the Package tab. Release Please sets the version, so every release is higher than the one already in the store.
+Merging the release pull request publishes a [GitHub release](https://github.com/TrogonStack/emote-importer-browser-extension/releases) with `emote-importer-chrome-<version>.zip` attached, uploads that zip to this item, and submits it for review. Release Please sets the version, so every release is higher than the one already in the store.
+
+The release workflow signs in as the publisher's linked service account, so nothing needs to be uploaded by hand. If the Chrome Web Store step fails, download the zip from the release and upload it from the Package tab instead. Changing the item's visibility in the dashboard requires one manual publish before the workflow can publish again.
 
 Leave Verified CRX uploads off. Opting in requires signing every future upload with a private key that only the publisher holds.
 
