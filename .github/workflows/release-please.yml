@@ -30,74 +30,13 @@ jobs:
         with:
           token: ${{ secrets.GH_PAT_RELEASE_PLEASE_ACTION }}
 
-  package:
-    name: Package
+  release:
+    name: Release
     needs: release-please
     if: needs.release-please.outputs.release_created == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
     permissions:
       contents: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: ${{ needs.release-please.outputs.tag_name }}
-          persist-credentials: false
-
-      - name: Install mise
-        uses: jdx/mise-action@9149ea85001c7435d5a66bb127d6a1b6227cb0a5 # v5.0.0
-
-      - name: Install dependencies
-        run: mise run github:workflows:ci:install
-
-      - name: Package
-        env:
-          RELEASE_TAG: ${{ needs.release-please.outputs.tag_name }}
-        run: mise run github:workflows:release:package
-
-      - name: Attach packages to the release
-        env:
-          GH_TOKEN: ${{ github.token }}
-          TAG_NAME: ${{ needs.release-please.outputs.tag_name }}
-        run: gh release upload "$TAG_NAME" dist/*.zip --repo "$GITHUB_REPOSITORY" --clobber
-
-  chrome-web-store:
-    name: Chrome Web Store
-    needs: [release-please, package]
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    environment: chrome-web-store
-    permissions:
-      contents: read
       id-token: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: ${{ needs.release-please.outputs.tag_name }}
-          persist-credentials: false
-
-      - name: Install mise
-        uses: jdx/mise-action@9149ea85001c7435d5a66bb127d6a1b6227cb0a5 # v5.0.0
-
-      - name: Download the Chrome package
-        env:
-          GH_TOKEN: ${{ github.token }}
-          TAG_NAME: ${{ needs.release-please.outputs.tag_name }}
-        run: gh release download "$TAG_NAME" --repo "$GITHUB_REPOSITORY" --pattern 'emote-importer-chrome-*.zip' --dir dist
-
-      - name: Google Cloud auth
-        id: google
-        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
-        with:
-          workload_identity_provider: ${{ vars.CWS_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ vars.CWS_SERVICE_ACCOUNT }}
-          token_format: access_token
-          access_token_scopes: https://www.googleapis.com/auth/chromewebstore
-
-      - name: Publish
-        env:
-          CWS_ACCESS_TOKEN: ${{ steps.google.outputs.access_token }}
-          CWS_PUBLISHER_ID: ${{ vars.CWS_PUBLISHER_ID }}
-        run: mise run github:workflows:release:chrome-web-store dist/emote-importer-chrome-*.zip
+    uses: ./.github/workflows/release.yml
+    with:
+      tag: ${{ needs.release-please.outputs.tag_name }}

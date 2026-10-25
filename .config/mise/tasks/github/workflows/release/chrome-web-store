@@ -12,7 +12,7 @@ items="publishers/$publisher/items/$item"
 
 request() {
   local response
-  if ! response="$(curl --silent --show-error --fail-with-body -H "Authorization: Bearer $token" "$@")"; then
+  if ! response="$(curl --silent --show-error --fail-with-body -H @<(printf 'Authorization: Bearer %s\n' "$token") "$@")"; then
     echo "$response" >&2
     return 1
   fi
