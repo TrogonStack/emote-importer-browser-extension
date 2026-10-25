@@ -27,6 +27,8 @@ jobs:
         run: mise run github:workflows:ci:install
 
       - name: Package
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: mise run github:workflows:release:package
 
       - name: Attach packages to the release
