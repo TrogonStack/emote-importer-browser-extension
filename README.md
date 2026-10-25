@@ -10,6 +10,10 @@
 
 ![Import panel listing popular 7TV emotes](store/screenshots/import-7tv.png)
 
+## Install
+
+Install Emote Importer from the [Chrome Web Store](https://chromewebstore.google.com/detail/emote-importer/biaakcdcbhoobhhpkdmocdneokkckcod).
+
 ## Use
 
 1. Open your workspace's emoji page, for example `https://<workspace>.slack.com/customize/emoji`.
