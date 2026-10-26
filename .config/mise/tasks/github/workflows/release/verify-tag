@@ -3,8 +3,17 @@
 set -euo pipefail
 
 release_tag="${RELEASE_TAG:?RELEASE_TAG is required}"
+ref="${GITHUB_REF:?GITHUB_REF is required}"
 if [[ ! "$release_tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   echo "Release tag $release_tag is not a version tag such as v1.2.3" >&2
+  exit 1
+fi
+if [[ "$ref" != "refs/tags/$release_tag" ]]; then
+  echo "Release runs must start from the tag $release_tag, not $ref" >&2
+  exit 1
+fi
+if [[ "$(git rev-parse HEAD)" != "$(git rev-parse "refs/tags/$release_tag^{commit}")" ]]; then
+  echo "The checked out commit is not the one tag $release_tag points to" >&2
   exit 1
 fi
 if ! git merge-base --is-ancestor "refs/tags/$release_tag^{commit}" origin/main; then
