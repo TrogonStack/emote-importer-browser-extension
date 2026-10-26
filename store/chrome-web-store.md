@@ -8,7 +8,7 @@ Merging the release pull request publishes a [GitHub release](https://github.com
 
 The release workflow signs in as the publisher's linked service account, so nothing needs to be uploaded by hand. If the Chrome Web Store step fails before the upload succeeds, download the zip from the release and upload it from the Package tab instead. If it fails after the upload, the package is already in the item's draft, so submit it for review from the dashboard rather than uploading it again. Changing the item's visibility in the dashboard requires one manual publish before the workflow can publish again.
 
-To package and submit an existing release again, run the Release workflow by hand from `main` with its tag.
+To package and submit an existing release again, run the Release workflow by hand and pick its tag as the ref.
 
 Leave Verified CRX uploads off. Opting in requires signing every future upload with a private key that only the publisher holds.
 
