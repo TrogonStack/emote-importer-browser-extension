@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+#MISE description="Upload a Chrome bundle to the Chrome Web Store and submit it for review"
+#USAGE arg "<package>" help="Path to the Chrome zip to upload"
+set -euo pipefail
+
+package="${usage_package:?}"
+token="${CWS_ACCESS_TOKEN:?CWS_ACCESS_TOKEN is required}"
+publisher="${CWS_PUBLISHER_ID:?CWS_PUBLISHER_ID is required}"
+item="biaakcdcbhoobhhpkdmocdneokkckcod"
+api="https://chromewebstore.googleapis.com"
+items="publishers/$publisher/items/$item"
+
+request() {
+  local response
+  if ! response="$(curl --silent --show-error --fail-with-body -H @<(printf 'Authorization: Bearer %s\n' "$token") "$@")"; then
+    echo "$response" >&2
+    return 1
+  fi
+  echo "$response"
+}
+
+state="$(request -X POST -T "$package" "$api/upload/v2/$items:upload" | jq -r '.uploadState')"
+for _ in $(seq 1 30); do
+  [[ "$state" == "IN_PROGRESS" ]] || break
+  sleep 10
+  state="$(request "$api/v2/$items:fetchStatus" | jq -r '.lastAsyncUploadState')"
+done
+if [[ "$state" != "SUCCEEDED" ]]; then
+  echo "Chrome Web Store upload ended in state $state" >&2
+  exit 1
+fi
+
+request -X POST -H "Content-Type: application/json" -d '{}' "$api/v2/$items:publish" | jq -r '"Submitted \(.itemId): \(.state)"'
