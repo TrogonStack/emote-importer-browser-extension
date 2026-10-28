@@ -12,7 +12,7 @@
 
 ## Install
 
-Install Emote Importer from the [Chrome Web Store](https://chromewebstore.google.com/detail/emote-importer/biaakcdcbhoobhhpkdmocdneokkckcod).
+Install Emote Importer from the [Chrome Web Store](https://chromewebstore.google.com/detail/emote-importer/biaakcdcbhoobhhpkdmocdneokkckcod) or [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/emote-importer/).
 
 ## Use
 
