@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/TrogonStack/emote-importer-browser-extension/compare/v0.2.0...v0.2.1) (2026-10-28)
+
+
+### Bug Fixes
+
+* **firefox:** Require a Firefox for Android version that supports data collection permissions ([#11](https://github.com/TrogonStack/emote-importer-browser-extension/issues/11)) ([f596a94](https://github.com/TrogonStack/emote-importer-browser-extension/commit/f596a94178f59bfbe05f3f1aed43ce54c8b96ba5))
+
 ## [0.2.0](https://github.com/TrogonStack/emote-importer-browser-extension/compare/v0.1.0...v0.2.0) (2026-10-25)
 
 
