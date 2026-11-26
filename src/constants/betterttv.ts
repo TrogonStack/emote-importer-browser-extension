@@ -8,8 +8,5 @@ export const BETTERTTV_UPLOAD_SIZES = ["3x", "2x", "1x"] as const;
 
 export const BETTERTTV_UPLOAD_FORMATS = ["", ".webp"] as const;
 
-export const BETTERTTV_TOP_CURSOR_PREFIX = "top:";
-
-export const BETTERTTV_TOP_SCAN_PAGE_SIZE = 100;
-
-export const BETTERTTV_TOP_SCAN_PAGES = 5;
+export const BETTERTTV_SEARCH_REQUIRES_LOGIN_MESSAGE =
+  "BetterTTV now requires an account to search emotes. Clear the search to browse popular BetterTTV emotes, or search on 7TV.";

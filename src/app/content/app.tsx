@@ -14,7 +14,7 @@ import {
 import { NAMESPACE } from "@/constants/namespace";
 import { emoteKey, parseEmoteSearchQuery } from "@/helpers/emote";
 import { onEmoteCacheChanged } from "@/storages/local/emote-cache";
-import { sendRequest } from "@/helpers/messages";
+import { errorMessage, sendRequest } from "@/helpers/messages";
 import { loadSettings } from "@/storages/sync/settings";
 import { Button } from "@/components/button";
 import { TextInput } from "@/components/text-input";
@@ -91,7 +91,7 @@ function usePagedEmotes(props: PagedEmotesProps): PagedState {
               emotes: [],
               nextCursor: undefined,
               loadingMore: false,
-              error: String(error),
+              error: errorMessage(error),
             });
           },
         );
@@ -122,7 +122,7 @@ function usePagedEmotes(props: PagedEmotesProps): PagedState {
           loadingMore: false,
         })),
       (error: unknown) =>
-        update((current) => ({ ...current, loadingMore: false, error: String(error) })),
+        update((current) => ({ ...current, loadingMore: false, error: errorMessage(error) })),
     );
   }, [provider, results]);
 

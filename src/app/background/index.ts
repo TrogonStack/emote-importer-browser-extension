@@ -10,7 +10,12 @@ import {
 import { EMOTE_PAGE_SIZE } from "@/constants/emote";
 import { mergeEmotes, toEmoteImageUrl } from "@/helpers/emote";
 import { isFresh, readEmoteCache, writeEmoteCache } from "@/storages/local/emote-cache";
-import type { EmoteImageResponse, Envelope, Request } from "@/helpers/messages";
+import {
+  errorMessage,
+  type EmoteImageResponse,
+  type Envelope,
+  type Request,
+} from "@/helpers/messages";
 import { fetchBttvChannel, fetchBttvGlobal, fetchBttvPage } from "@/services/betterttv";
 import { fetchSevenTvChannel, fetchSevenTvGlobal, fetchSevenTvPage } from "@/services/7tv";
 import type { Settings } from "@/types/settings";
@@ -115,7 +120,7 @@ chrome.runtime.onMessage.addListener((request: Request, sender, sendResponse) =>
     .then((value) => sendResponse({ ok: true, value } satisfies Envelope<unknown>))
     .catch((error: unknown) => {
       console.error(`[${NAMESPACE}] request failed`, request.type, error);
-      sendResponse({ ok: false, error: String(error) } satisfies Envelope<unknown>);
+      sendResponse({ ok: false, error: errorMessage(error) } satisfies Envelope<unknown>);
     });
   return true;
 });
