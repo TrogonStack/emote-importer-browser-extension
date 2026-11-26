@@ -40,3 +40,7 @@ export async function sendRequest<R extends Request>(request: R): Promise<Respon
   if (!envelope.ok) throw new Error(envelope.error);
   return envelope.value;
 }
+
+export function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}

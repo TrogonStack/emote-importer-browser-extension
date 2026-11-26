@@ -11,6 +11,7 @@ import { toEmoteImageUrl } from "@/helpers/emote";
 import {
   BETTERTTV_API_URL,
   BETTERTTV_CDN_URL,
+  BETTERTTV_SEARCH_REQUIRES_LOGIN_MESSAGE,
   BETTERTTV_UPLOAD_FORMATS,
   BETTERTTV_UPLOAD_SIZES,
 } from "@/constants/betterttv";
@@ -41,12 +42,23 @@ function toEmote(raw: BttvEmote): Emote {
   };
 }
 
+class BttvRequestError extends Error {
+  constructor(
+    readonly status: number,
+    url: string,
+  ) {
+    super(`BetterTTV request failed (${status}): ${url}`);
+  }
+}
+
 async function fetchJson<T>(url: string): Promise<T> {
   const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`BetterTTV request failed (${response.status}): ${url}`);
-  }
+  if (!response.ok) throw new BttvRequestError(response.status, url);
   return (await response.json()) as T;
+}
+
+function isUnauthorized(error: unknown): boolean {
+  return error instanceof BttvRequestError && (error.status === 401 || error.status === 403);
 }
 
 export async function fetchBttvGlobal(): Promise<Emote[]> {
@@ -67,7 +79,10 @@ async function searchBttv(
   const params = new URLSearchParams({ query, offset: String(offset), limit: String(limit) });
   const emotes = await fetchJson<BttvEmote[]>(
     `${BETTERTTV_API_URL}/emotes/shared/search?${params}`,
-  );
+  ).catch((error: unknown) => {
+    if (isUnauthorized(error)) throw new Error(BETTERTTV_SEARCH_REQUIRES_LOGIN_MESSAGE);
+    throw error;
+  });
   return {
     emotes: emotes.map(toEmote),
     nextCursor: emotes.length > 0 ? (String(offset + limit) as EmotePageCursor) : undefined,
